@@ -1,7 +1,7 @@
 # Video Archive Discord Bot
  A super simple Discord bot designed for helping you archive videos posted to your channels.
  
- Video Archive Discord Bot will download any video from YouTube, Instagram, Tik Tok, and Reddit linked in a Discord channel it is in, and post the video file directly in a designated channel. 
+ Video Archive Discord Bot will download any video from YouTube, Instagram, Tik Tok, and Reddit linked in a Discord channel it is in, and post the video file directly in a designated archive channel. 
  In cases where the file is too large for Discord's free tier, the video will be compressed to fit first.
  
  # Installation & Usage
