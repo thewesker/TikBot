@@ -18,7 +18,7 @@ def extractUrl(inputString):
 def isSupportedUrl(url):
     response = {'url':  '', 'supported': 'false', 'messages': ''}
     
-    supportedDomains = ['youtube', 'tiktok', 'instagram', 'reddit', 'redd.it']
+    supportedDomains = ['youtube', 'youtu.be', 'tiktok', 'instagram', 'reddit', 'redd.it']
 
     for domain in supportedDomains:
         if(domain in url):
@@ -27,6 +27,6 @@ def isSupportedUrl(url):
     
     # We only reach here if the URL isn't supported
     response['messages'] = "Information: Supplied URL is not a supported domain. To force TikBot to attempt it anyway, include a '🤖' in your message."
-    print(response['messages'])
+  #  print(response['messages'])
     return response
     

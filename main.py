@@ -36,7 +36,7 @@ async def on_message(message):
             print("Downloaded: " + fileName + " For User: " + str(message.author))
 
             if(messages.startswith("Error")):
-                await message.author.send('TikBot has failed you. Consider berating my human if this was not expected.\nMessage: ' + messages)
+          ##      await message.author.send('TikBot has failed you. Consider berating my human if this was not expected.\nMessage: ' + messages)
                 return
 
             audioFilename = "audio_" + fileName + ".mp3"
@@ -52,34 +52,36 @@ async def on_message(message):
         return
 
     # Only do anything in TikTok channels
-    if(not message.channel.name.startswith("tik-tok")):
-        return
+  #  if(not message.channel.name.startswith("tik-tok")):
+   #     return
 
     # Be polite!
-    if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
+  #  if message.content.startswith('$hello'):
+   #     await message.channel.send('Hello!')
 
     # Extract and validate the request 
     extractResponse = extractUrl(message.content)
     url = extractResponse["url"]
     messages = extractResponse['messages']
     if(messages.startswith("Error")):
-        await message.channel.send('TikBot encountered an error determing a URL. Consider berating my human if this was not expected.\nMessage: ' + messages)
+     ##   await message.channel.send('TikBot encountered an error determing a URL. Consider berating my human if this was not expected.\nMessage: ' + messages)
         return
 
-    print("Got URL: " + url + " For User: " + str(message.author))
+  #  print("Got URL: " + url + " For User: " + str(message.author))
     if('🤖' not in message.content):
         # Validate unless we've been reqeuested not to
         validateResponse = isSupportedUrl(url)
         messages = validateResponse['messages']
         if(messages.startswith("Error")):
-            await message.channel.send('TikBot encountered an error validating the URL. Consider berating my human if this was not expected.\nMessage: ' + messages)
+      ##      await message.channel.send('TikBot encountered an error validating the URL. Consider berating my human if this was not expected.\nMessage: ' + messages)
             return
         if(validateResponse['supported'] == 'false'):
             # Unsupported URL, return silently without doing anything
             return
-
-    await message.channel.send('TikBot downloading video now!')
+    ARCHIVE_CHANNEL = int(os.getenv('ARCHIVE'))
+    channel = client.get_channel(ARCHIVE_CHANNEL)
+    sent_message = await message.channel.send("Downloading and processing video now. It will be available to view in " + str(channel.mention) + " soon. If it's a long video, the length may be shortened.")
+    await sent_message.delete(delay=3)
     downloadResponse = download(url)
     fileName = downloadResponse['fileName']
     duration = downloadResponse['duration']
@@ -88,21 +90,26 @@ async def on_message(message):
     print("Downloaded: " + fileName + " For User: " + str(message.author))
 
     if(messages.startswith("Error")):
-        await message.channel.send('TikBot has failed you. Consider berating my human if this was not expected.\nMessage: ' + messages)
+    ##    await message.channel.send('TikBot has failed you. Consider berating my human if this was not expected.\nMessage: ' + messages)
         return
 
     # Check file size, if it's small enough just send it!
     fileSize = os.stat(fileName).st_size
-
+    message_author = str(message.author)
+    vid_details = "Video posted by <@!" + str(message.author.id) + "> at " + str(message.created_at) + " in " + str(message.channel.mention) + " " + str(message.jump_url)
     if(fileSize < 8000000):
         with open(fileName, 'rb') as fp:
-            await message.channel.send(file=discord.File(fp, str(fileName)))
+            print(vid_details)
+            channel = client.get_channel(ARCHIVE_CHANNEL)
+            video_archive_msg = await channel.send(vid_details, file=discord.File(fp, str(fileName)))
+            vid_msg_id = await message.channel.send("Video archived: " + str(video_archive_msg.jump_url))
+            await vid_msg_id.delete(delay=300)
         os.remove(fileName)
 
     else:
         # We need to compress the file below 8MB or discord will make a sad
-        compressionMessage = getCompressionMessage()
-        await message.channel.send(compressionMessage)
+      #  compressionMessage = getCompressionMessage()
+    #    await channel.send(compressionMessage)
         print("Duration = " + str(duration))
         # Give us 7MB files with VBR encoding to allow for some overhead
         bitrateKilobits = 0
@@ -114,7 +121,11 @@ async def on_message(message):
         print("Calced bitrate = " + str(bitrateKilobits))
         ffmpeg.input(fileName).output("small_" + fileName, **{'b:v': str(bitrateKilobits) + 'k', 'b:a': '64k', 'fs': '8M', 'threads': '4'}).run()
         with open("small_" + fileName, 'rb') as fp:
-            await message.channel.send(file=discord.File(fp, str("small_" + fileName)))
+            channel = client.get_channel(ARCHIVE_CHANNEL)
+            print(vid_details)
+            video_archive_msg = await channel.send(vid_details, file=discord.File(fp, str("small_" + fileName)))
+            vid_msg_id = await message.channel.send("Video archived: " + str(video_archive_msg.jump_url))
+            await vid_msg_id.delete(delay=60)
         # Delete the compressed and original file
         os.remove(fileName)
         os.remove("small_" + fileName)
