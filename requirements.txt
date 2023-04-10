@@ -1,4 +1,4 @@
-ytp_dl
+yt_dlp
 discord
 python-dotenv
 ffmpeg-python
