@@ -1,8 +1,8 @@
-import youtube_dl
+import ytp_dl
 
 def download(videoUrl):
     response = {'fileName':  '', 'duration':  0, 'messages': ''}
-    ydl = youtube_dl.YoutubeDL({'outtmpl': '%(id)s.mp4', 'merge_output_format': 'mp4'})
+    ydl = ytp_dl.YoutubeDL({'outtmpl': '%(id)s.mp4', 'merge_output_format': 'mp4'})
 
 
     with ydl:
