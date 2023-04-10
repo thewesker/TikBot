@@ -100,7 +100,7 @@ async def on_message(message):
     fileSize = os.stat(fileName).st_size
     message_author = str(message.author)
     vid_details = "Video posted by <@!" + str(message.author.id) + "> at " + str(message.created_at) + " in " + str(message.channel.mention) + " " + str(message.jump_url)
-    if(fileSize < 8000000):
+    if(fileSize < 25000000):
         with open(fileName, 'rb') as fp:
             print(vid_details)
             channel = client.get_channel(ARCHIVE_CHANNEL)
@@ -122,7 +122,7 @@ async def on_message(message):
         else:
             bitrateKilobits = 800
         print("Calced bitrate = " + str(bitrateKilobits))
-        ffmpeg.input(fileName).output("small_" + fileName, **{'b:v': str(bitrateKilobits) + 'k', 'b:a': '64k', 'fs': '8M', 'threads': '4'}).run()
+        ffmpeg.input(fileName).output("small_" + fileName, **{'b:v': str(bitrateKilobits) + 'k', 'b:a': '64k', 'fs': '25M', 'threads': '4'}).run()
         with open("small_" + fileName, 'rb') as fp:
             channel = client.get_channel(ARCHIVE_CHANNEL)
             print(vid_details)
