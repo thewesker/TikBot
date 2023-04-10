@@ -5,7 +5,7 @@
  In cases where the file is too large for Discord's free tier, the video will be compressed to fit first.
  
  # Installation & Usage
- Requirements: Python 3
+ Requirements: Python 3.10
  
  1. Set Discord access token in ```.env``` as ```TOKEN=$yourTokenGoesHere```
  
