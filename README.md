@@ -24,4 +24,4 @@
  # Notes
  Not recommended to be available as a public bot due to the bandwidth and processing requirements of downloading and encoding videos.
  
- Commands to delete files once uploaded does not always work, therefore I recommend running a rm command via crontab frequently.
+ Commands to delete files once uploaded do not always work, therefore I recommend running a rm command via crontab frequently.
